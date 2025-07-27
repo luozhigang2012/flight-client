@@ -10,7 +10,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 3,
-      staleTime: 5 * 60 * 1000, // 5 分钟
+      staleTime: 1 * 60 * 1000, // 1分钟内数据保持新鲜
+      gcTime: 5 * 60 * 1000, // 缓存保留10分钟
     },
   },
 });

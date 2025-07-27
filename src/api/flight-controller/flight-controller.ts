@@ -18,8 +18,10 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
-  ApiResponseFlightResponseDTO,
-  ApiResponsePagedResponseDTOFlightResponseDTO,
+  // ApiResponseFlightResponseDTO,
+  // ApiResponsePagedResponseDTOFlightResponseDTO,
+  FlightResponseDTO,
+  PagedResponseDTOFlightResponseDTO,
   SearchFlightsParams,
 } from "../openAPIDefinition.schemas";
 
@@ -29,7 +31,7 @@ export const searchFlights = (
   params: SearchFlightsParams,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<ApiResponsePagedResponseDTOFlightResponseDTO>({
+  return axiosInstance<PagedResponseDTOFlightResponseDTO>({
     url: `/api/flights`,
     method: "GET",
     params,
@@ -158,7 +160,7 @@ export function useSearchFlights<
 }
 
 export const getFlightDetail = (id: number, signal?: AbortSignal) => {
-  return axiosInstance<ApiResponseFlightResponseDTO>({
+  return axiosInstance<FlightResponseDTO>({
     url: `/api/flights/${id}`,
     method: "GET",
     signal,

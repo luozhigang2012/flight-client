@@ -13,12 +13,25 @@ function SearchResultPage() {
   const to = searchParams.get("to") || "";
   const date = searchParams.get("departureDate") || "";
 
-  const searchFlightsParams = useMemo(
-    () => ({ from, to, date }),
-    [from, to, date]
-  );
+  const searchFlightsParams = useMemo(() => {
+    const params = { from, to, date };
+    if (import.meta.env.DEV) {
+      console.log("SearchResultPage - 创建新的查询参数:", params);
+    }
+    return params;
+  }, [from, to, date]);
 
   const { data, isLoading, isError } = useSearchFlights(searchFlightsParams);
+
+  // 添加调试日志来追踪渲染
+  if (import.meta.env.DEV) {
+    console.log("SearchResultPage - 组件渲染, 查询参数:", searchFlightsParams);
+    console.log("SearchResultPage - 查询状态:", {
+      isLoading,
+      isError,
+      hasData: !!data,
+    });
+  }
 
   if (isLoading) return <div>正在搜索航班...</div>;
 
