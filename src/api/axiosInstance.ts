@@ -6,11 +6,26 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: API_URL });
 
-// 添加请求拦截器，用于在每个请求中注入 JWT
+// 定义不需要认证的公开 API 路径
+const PUBLIC_PATHS = [
+  "/api/auth/login",
+  "/api/auth/register",
+  "/api/auth/refresh",
+  // 航班和机场查询通常是公开的
+  "/api/airports",
+  "/api/flights",
+];
+
+// 添加请求拦截器，用于在每个请求中智能地注入 JWT
 AXIOS_INSTANCE.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
+    const isPublicPath = PUBLIC_PATHS.some((path) =>
+      config.url?.startsWith(path)
+    );
+
+    // 如果是受保护的路径并且存在 token，则添加 Authorization 头
+    if (token && !isPublicPath) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

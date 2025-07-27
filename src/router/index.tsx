@@ -7,6 +7,7 @@ import SearchResultPage from "../pages/SearchResultPage";
 import MyBookingsPage from "../pages/MyBookingsPage";
 import BookingReviewPage from "../pages/BookingReviewPage";
 import FlightDetailPage from "../pages/FlightDetailPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 /**
  * 全局错误边界页面
@@ -14,7 +15,7 @@ import FlightDetailPage from "../pages/FlightDetailPage";
  */
 function ErrorPage() {
   const error = useRouteError() as any;
-  console.error("路由错误:", error);
+  console.error("Routing Error:", error);
 
   return (
     <div
@@ -23,7 +24,7 @@ function ErrorPage() {
     >
       <h1 className="text-4xl font-bold text-red-600 mb-4">Oops!</h1>
       <p className="text-lg text-gray-800 mb-2">
-        抱歉，应用发生了一个意外错误。
+        Sorry, an unexpected application error occurred.
       </p>
       <p className="text-md text-gray-600 bg-red-100 p-2 rounded">
         <i>{error.statusText || error.message}</i>
@@ -66,11 +67,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "bookings",
-        element: <MyBookingsPage />,
+        element: (
+          <ProtectedRoute>
+            <MyBookingsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "booking/review",
-        element: <BookingReviewPage />,
+        element: (
+          <ProtectedRoute>
+            <BookingReviewPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
