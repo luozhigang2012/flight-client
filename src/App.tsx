@@ -1,20 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import MyBookingsPage from "./pages/MyBookingsPage";
-import SearchResultPage from "./pages/SearchResultPage";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/my-bookings" element={<MyBookingsPage />} />
-          <Route path="/search-results" element={<SearchResultPage />} />
-        </Routes>
-      </Router>
+      {/* 可以在这里放置全局共享的 UI，例如导航栏、页脚等 */}
+      <main>
+        <Outlet /> {/* 子路由的页面内容将在这里渲染 */}
+      </main>
     </>
   );
 }

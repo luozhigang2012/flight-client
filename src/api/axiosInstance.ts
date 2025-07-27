@@ -6,6 +6,20 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: API_URL });
 
+// 添加请求拦截器，用于在每个请求中注入 JWT
+AXIOS_INSTANCE.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // 定义通用的 API 响应结构
 // T 是实际的业务数据类型
 export interface ApiResponse<T> {

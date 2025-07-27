@@ -3,8 +3,9 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
-import App from "./App";
 import { StagewiseToolbar } from "@stagewise/toolbar-react";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 
 // 创建 QueryClient 实例
 const queryClient = new QueryClient({
@@ -21,7 +22,7 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} />
       {/* Stagewise Toolbar for debugging */}
       <StagewiseToolbar />
