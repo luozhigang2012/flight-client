@@ -1,5 +1,6 @@
 // src/api/axiosInstance.ts
 import Axios, { type AxiosRequestConfig } from "axios";
+import i18n from "../i18n";
 
 // 从环境变量或配置文件中获取 API 的 base URL
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -28,6 +29,15 @@ AXIOS_INSTANCE.interceptors.request.use(
     if (token && !isPublicPath) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // 为所有请求添加 lang 参数
+    const lang = i18n.language;
+    const langMap: { [key: string]: string } = {
+      en: "en_US",
+      zh: "zh_CN",
+    };
+    config.params = { ...config.params, lang: langMap[lang] || "en_US" };
+
     return config;
   },
   (error) => {

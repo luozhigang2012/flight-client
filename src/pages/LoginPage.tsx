@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useLogin } from "../api/auth-controller/auth-controller";
 import type {
@@ -11,6 +12,7 @@ import type {
 import { useAuth } from "../context/AuthContext";
 
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -51,7 +53,7 @@ const LoginPage: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-sm p-8 space-y-8 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">
-          Welcome back
+          {t("Welcome back")}
         </h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -59,7 +61,7 @@ const LoginPage: React.FC = () => {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Username or email
+              {t("Username or email")}
             </label>
             <input
               id="email"
@@ -79,7 +81,7 @@ const LoginPage: React.FC = () => {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              {t("Password")}
             </label>
             <input
               id="password"
@@ -101,7 +103,7 @@ const LoginPage: React.FC = () => {
               href="#"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Forgot username or password?
+              {t("Forgot username or password?")}
             </a>
           </div>
 
@@ -111,17 +113,19 @@ const LoginPage: React.FC = () => {
               disabled={mutation.isPending}
               className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300"
             >
-              {mutation.isPending ? "Logging in..." : "Log in"}
+              {mutation.isPending ? t("Logging in...") : t("Log in")}
             </button>
           </div>
 
           <div className="text-sm text-center">
-            <span className="text-gray-600">Don't have an account? </span>
+            <span className="text-gray-600">
+              {t("Don't have an account?")}{" "}
+            </span>
             <a
               href="/register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Sign up
+              {t("Sign up")}
             </a>
           </div>
         </form>

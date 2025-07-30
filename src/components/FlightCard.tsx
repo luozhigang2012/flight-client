@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import type { FlightResponseDTO } from "../api/openAPIDefinition.schemas";
@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useBooking } from "../context/BookingContext";
 import { useModal } from "../context/ModalContext";
 import FlightDetailView from "./FlightDetailView";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(customParseFormat);
 
@@ -15,37 +16,41 @@ interface FlightCardProps {
 }
 
 const FlightCard: React.FC<FlightCardProps> = ({ flight }) => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { isAuthenticated } = useAuth();
   const { outboundFlight, selectOutboundFlight, selectReturnFlight } =
     useBooking();
   const { showLoginModal } = useModal();
 
-  const proceedToBooking = () => {
+  const handleSelect = () => {
     const tripType = searchParams.get("tripType");
 
+    // 场景1: 选择去程航班 (往返)
     if (tripType === "round-trip" && !outboundFlight) {
       selectOutboundFlight(flight);
-      const returnSearchParams = new URLSearchParams(location.search);
+      // 构造返程航班的搜索链接，直接复用现有参数。
+      // SearchResultPage.tsx 会根据上下文自动处理出发地/目的地的交换逻辑。
+      const returnSearchParams = new URLSearchParams(searchParams);
       navigate(`/flights/search?${returnSearchParams.toString()}`);
     } else {
-      if (tripType === "round-trip") {
-        selectReturnFlight(flight);
-      } else {
-        selectOutboundFlight(flight);
-      }
-      navigate(`/booking/review`);
-    }
-  };
+      // 场景2: 选择返程航班或单程航班
+      const proceedToBooking = () => {
+        if (tripType === "round-trip") {
+          selectReturnFlight(flight);
+        } else {
+          selectOutboundFlight(flight);
+        }
+        navigate(`/booking/review`);
+      };
 
-  const handleSelect = () => {
-    if (isAuthenticated) {
-      proceedToBooking();
-    } else {
-      showLoginModal(proceedToBooking);
+      if (isAuthenticated) {
+        proceedToBooking();
+      } else {
+        showLoginModal(proceedToBooking);
+      }
     }
   };
 
@@ -98,7 +103,7 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight }) => {
             onClick={handleSelect}
             className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
           >
-            Select
+            {t("Select")}
           </button>
         </div>
       </div>

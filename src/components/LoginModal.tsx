@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useLogin } from "../api/auth-controller/auth-controller";
 import type {
@@ -12,6 +13,7 @@ import { useAuth } from "../context/AuthContext";
 import { useModal } from "../context/ModalContext";
 
 const LoginModal: React.FC = () => {
+  const { t } = useTranslation();
   const { isModalOpen, hideModal, onLoginSuccess } = useModal();
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ const LoginModal: React.FC = () => {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Log in</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("Log In")}</h2>
           <button
             onClick={hideModal}
             className="text-gray-500 hover:text-gray-800"
@@ -89,7 +91,7 @@ const LoginModal: React.FC = () => {
               htmlFor="modal-email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email address
+              {t("Email address")}
             </label>
             <input
               id="modal-email"
@@ -109,7 +111,7 @@ const LoginModal: React.FC = () => {
               htmlFor="modal-password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              {t("Password")}
             </label>
             <input
               id="modal-password"
@@ -132,7 +134,7 @@ const LoginModal: React.FC = () => {
               disabled={mutation.isPending}
               className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 disabled:bg-indigo-300"
             >
-              {mutation.isPending ? "Logging in..." : "Log in"}
+              {mutation.isPending ? t("Logging in...") : t("Log In")}
             </button>
           </div>
         </form>

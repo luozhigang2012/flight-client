@@ -1,21 +1,19 @@
-import React, { useMemo, useState } from "react";
-import { useGetBookings } from "../api/booking-controller/booking-controller";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getBookings } from "../api/booking-controller/booking-controller";
 import { useGetFlightDetail } from "../api/flight-controller/flight-controller";
-import type {
-  BookingResponseDTO,
-  PagedResponseDTOBookingResponseDTO,
-} from "../api/openAPIDefinition.schemas";
+import type { BookingResponseDTO } from "../api/openAPIDefinition.schemas";
 import dayjs from "dayjs";
 import FlightDetailView from "../components/FlightDetailView";
+import BookingCardSkeleton from "../components/BookingCardSkeleton";
 
 const BookingCard: React.FC<{ booking: BookingResponseDTO }> = ({
   booking,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { data: flightResponse, isLoading: isLoadingFlight } =
-    useGetFlightDetail(booking.flightId!, {
-      query: { enabled: isExpanded }, // 只有在展开时才获取航班详情
-    });
+    useGetFlightDetail(booking.flightId!);
   const flight = flightResponse?.data;
 
   return (
@@ -78,24 +76,41 @@ const BookingCard: React.FC<{ booking: BookingResponseDTO }> = ({
 };
 
 const MyBookingsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<"upcoming" | "past">("upcoming");
-  const { data: bookingsResponse, isLoading } = useGetBookings({
-    status: status.toUpperCase(),
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status: queryStatus,
+  } = useInfiniteQuery({
+    queryKey: ["bookings", status],
+    queryFn: ({ pageParam = 1 }) =>
+      getBookings({
+        status: status.toUpperCase() as "UPCOMING" | "PAST",
+        page: pageParam,
+        size: 10,
+      }),
+    getNextPageParam: (lastPage: any) => {
+      if (lastPage.data?.last) {
+        return undefined;
+      }
+      return (lastPage.data?.pageNumber ?? -1) + 2;
+    },
+    initialPageParam: 1,
   });
 
-  const bookings = useMemo(() => {
-    const pagedData = bookingsResponse?.data as
-      | PagedResponseDTOBookingResponseDTO
-      | undefined;
-    if (pagedData?.content) {
-      return pagedData.content as BookingResponseDTO[];
-    }
-    return [];
-  }, [bookingsResponse]);
+  const bookings =
+    data?.pages.flatMap((page: any) => page.data?.content ?? []) ?? [];
+  const noResults = queryStatus === "success" && bookings.length === 0;
 
   return (
     <div className="container mx-auto mt-8 p-4">
-      <h2 className="text-3xl font-bold mb-6">My Bookings</h2>
+      <h2 className="text-3xl font-bold mb-6">{t("My Bookings")}</h2>
 
       <div className="mb-6 border-b">
         <nav className="-mb-px flex space-x-8">
@@ -107,7 +122,7 @@ const MyBookingsPage: React.FC = () => {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            Upcoming
+            {t("Upcoming")}
           </button>
           <button
             onClick={() => setStatus("past")}
@@ -117,20 +132,20 @@ const MyBookingsPage: React.FC = () => {
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
-            Past
+            {t("Past")}
           </button>
         </nav>
       </div>
 
-      {isLoading ? (
-        <p>Loading bookings...</p>
-      ) : bookings.length > 0 ? (
+      {queryStatus === "pending" ? (
         <div className="space-y-4">
-          {bookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
+          {Array.from({ length: 3 }).map((_, index) => (
+            <BookingCardSkeleton key={index} />
           ))}
         </div>
-      ) : (
+      ) : queryStatus === "error" ? (
+        <p>Error: {error.message}</p>
+      ) : noResults ? (
         <div className="text-center py-12">
           <h3 className="text-xl font-semibold text-gray-700">
             No {status} bookings
@@ -139,6 +154,31 @@ const MyBookingsPage: React.FC = () => {
             You don't have any {status} bookings yet.
           </p>
         </div>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {bookings.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400"
+            >
+              {isFetchingNextPage
+                ? t("Loading more...")
+                : hasNextPage
+                ? t("Load More Bookings")
+                : t("No more bookings")}
+            </button>
+          </div>
+          {isFetching && !isFetchingNextPage ? (
+            <div className="text-center mt-4">Fetching...</div>
+          ) : null}
+        </>
       )}
     </div>
   );

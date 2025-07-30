@@ -6,6 +6,7 @@ import "./index.css";
 import { StagewiseToolbar } from "@stagewise/toolbar-react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
+import "./i18n";
 
 // 创建 QueryClient 实例
 const queryClient = new QueryClient({

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useBooking } from "../context/BookingContext";
 import { useAuth } from "../context/AuthContext";
 import { useCreateBooking } from "../api/booking-controller/booking-controller";
@@ -38,6 +39,7 @@ interface BookingForm {
 }
 
 const BookingReviewPage: React.FC = () => {
+  const { t } = useTranslation();
   const {
     outboundFlight,
     returnFlight,
@@ -133,7 +135,7 @@ const BookingReviewPage: React.FC = () => {
 
   return (
     <div className="container mx-auto mt-8 p-4">
-      <h2 className="text-3xl font-bold mb-6">Review your flights</h2>
+      <h2 className="text-3xl font-bold mb-6">{t("Review your flights")}</h2>
       <div className="space-y-8">
         {outboundFlight && (
           <FlightReviewCard flight={outboundFlight} type="Outbound" />
@@ -145,7 +147,9 @@ const BookingReviewPage: React.FC = () => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-8 pt-8 border-t">
-          <h3 className="text-2xl font-semibold mb-4">Passenger Information</h3>
+          <h3 className="text-2xl font-semibold mb-4">
+            {t("Passenger Information")}
+          </h3>
           <div className="space-y-6">
             {fields.map((field, index) => (
               <div key={field.id} className="p-4 bg-gray-50 rounded-lg">
@@ -200,18 +204,20 @@ const BookingReviewPage: React.FC = () => {
         </div>
 
         <div className="mt-8 pt-8 border-t">
-          <h3 className="text-2xl font-semibold mb-4">Fare summary</h3>
+          <h3 className="text-2xl font-semibold mb-4">{t("Fare summary")}</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span>Base fare ({passengerCount} passengers)</span>
+              <span>
+                {t("Base fare")} ({passengerCount} {t("passengers")})
+              </span>
               <span>${baseFare.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Taxes, fees, and carrier charges</span>
+              <span>{t("Taxes, fees, and carrier charges")}</span>
               <span>${taxes.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-bold text-xl pt-4 border-t">
-              <span>Total</span>
+              <span>{t("Total")}</span>
               <span>${total.toFixed(2)}</span>
             </div>
           </div>
@@ -224,7 +230,7 @@ const BookingReviewPage: React.FC = () => {
             disabled={mutation.isPending}
             className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-indigo-300"
           >
-            {mutation.isPending ? "Confirming..." : "Continue to payment"}
+            {mutation.isPending ? t("Confirming...") : t("Continue to payment")}
           </button>
         </div>
       </form>

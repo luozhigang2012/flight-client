@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useGetAirports } from "../api/airport-controller/airport-controller";
 import { useBooking } from "../context/BookingContext";
 import Autocomplete from "../components/Autocomplete";
@@ -16,6 +17,7 @@ interface FlightSearchForm {
 }
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { clearBooking, setPassengers } = useBooking();
   const { data: airportsResponse, isLoading: isLoadingAirports } =
@@ -92,8 +94,8 @@ const HomePage: React.FC = () => {
             "url('https://images.unsplash.com/photo-1570715729793-993169fa7a49?q=80&w=2070&auto=format&fit=crop')",
         }}
       >
-        <h1 className="text-5xl font-bold">Book flights</h1>
-        <p className="text-xl mt-2">Find the best fares for your next trip</p>
+        <h1 className="text-5xl font-bold">{t("Book flights")}</h1>
+        <p className="text-xl mt-2">{t("Find the best fares for your next trip")}</p>
       </div>
 
       {/* Search Form Section */}
@@ -108,7 +110,7 @@ const HomePage: React.FC = () => {
                 {...register("tripType")}
                 className="form-radio"
               />
-              <span className="ml-2">One-way</span>
+              <span className="ml-2">{t("One-way")}</span>
             </label>
             <label className="flex items-center">
               <input
@@ -117,7 +119,7 @@ const HomePage: React.FC = () => {
                 {...register("tripType")}
                 className="form-radio"
               />
-              <span className="ml-2">Round-trip</span>
+              <span className="ml-2">{t("Round-trip")}</span>
             </label>
           </div>
 
@@ -125,7 +127,7 @@ const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="from" className="block text-sm font-medium">
-                From
+                {t("From")}
               </label>
               <Controller
                 name="from"
@@ -149,7 +151,7 @@ const HomePage: React.FC = () => {
             </div>
             <div>
               <label htmlFor="to" className="block text-sm font-medium">
-                To
+                {t("To")}
               </label>
               <Controller
                 name="to"
@@ -178,7 +180,7 @@ const HomePage: React.FC = () => {
                 htmlFor="departureDate"
                 className="block text-sm font-medium"
               >
-                Depart
+                {t("Depart")}
               </label>
               <input
                 id="departureDate"
@@ -200,7 +202,7 @@ const HomePage: React.FC = () => {
                   htmlFor="returnDate"
                   className="block text-sm font-medium"
                 >
-                  Return
+                  {t("Return")}
                 </label>
                 <input
                   id="returnDate"
@@ -225,7 +227,7 @@ const HomePage: React.FC = () => {
           {/* Passengers */}
           <div>
             <label htmlFor="passengers" className="block text-sm font-medium">
-              Passengers
+              {t("Passengers")}
             </label>
             <input
               id="passengers"
@@ -250,7 +252,7 @@ const HomePage: React.FC = () => {
               type="submit"
               className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
             >
-              Search flights
+              {t("Search flights")}
             </button>
           </div>
         </form>

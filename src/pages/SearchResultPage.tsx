@@ -1,12 +1,15 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { searchFlights } from "../api/flight-controller/flight-controller";
 import FlightCard from "../components/FlightCard";
+import FlightCardSkeleton from "../components/FlightCardSkeleton";
 import type { FlightResponseDTO } from "../api/openAPIDefinition.schemas";
 import { useBooking } from "../context/BookingContext";
 
 const SearchResultPage: React.FC = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { outboundFlight } = useBooking();
 
@@ -59,28 +62,32 @@ const SearchResultPage: React.FC = () => {
     <div className="container mx-auto mt-8 p-4">
       <h1 className="text-3xl font-bold mb-6">
         {isReturnFlightSelection
-          ? "Select your return flight"
-          : "Select your outbound flight"}
+          ? t("Select your return flight")
+          : t("Select your outbound flight")}
       </h1>
       <h2 className="text-xl mb-4">
-        From{" "}
+        {t("From")}{" "}
         <span className="font-semibold">
           {isReturnFlightSelection ? toCity : fromCity}
         </span>{" "}
-        to{" "}
+        {t("To")}{" "}
         <span className="font-semibold">
           {isReturnFlightSelection ? fromCity : toCity}
         </span>
       </h2>
 
       {status === "pending" ? (
-        <p>Loading...</p>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <FlightCardSkeleton key={index} />
+          ))}
+        </div>
       ) : status === "error" ? (
         <p>Error: {error.message}</p>
       ) : noResults ? (
         <div className="text-center py-12">
           <h3 className="text-xl font-semibold text-gray-700">
-            No flights found
+            {t("No flights found")}
           </h3>
           <p className="text-gray-500 mt-2">
             We couldn't find any flights for the selected route and date.
@@ -89,7 +96,7 @@ const SearchResultPage: React.FC = () => {
             to="/"
             className="mt-6 inline-block px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600"
           >
-            Modify Search
+            {t("Modify Search")}
           </Link>
         </div>
       ) : (
@@ -107,10 +114,10 @@ const SearchResultPage: React.FC = () => {
               className="px-6 py-3 bg-blue-500 text-white rounded-lg disabled:bg-gray-400"
             >
               {isFetchingNextPage
-                ? "Loading more..."
+                ? t("Loading more...")
                 : hasNextPage
-                ? "Load More Flights"
-                : "No more flights"}
+                ? t("Load More Flights")
+                : t("No more flights")}
             </button>
           </div>
           {isFetching && !isFetchingNextPage ? (

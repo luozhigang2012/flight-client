@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useGetFlightDetail } from "../api/flight-controller/flight-controller";
 import dayjs from "dayjs";
 
@@ -11,6 +12,7 @@ const FlightDetailView: React.FC<FlightDetailViewProps> = ({
   flightId,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { data: flightResponse, isLoading } = useGetFlightDetail(flightId);
   const flight = flightResponse?.data;
 
@@ -33,7 +35,7 @@ const FlightDetailView: React.FC<FlightDetailViewProps> = ({
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
         <div>
-          <p className="text-sm text-gray-500">From</p>
+          <p className="text-sm text-gray-500">{t("From")}</p>
           <p className="text-xl font-bold">{flight.departure}</p>
           <p className="text-gray-600">
             {dayjs(flight.departureDate).format("dddd, MMMM D, YYYY")}
@@ -62,7 +64,7 @@ const FlightDetailView: React.FC<FlightDetailViewProps> = ({
           </div>
         </div>
         <div>
-          <p className="text-sm text-gray-500">To</p>
+          <p className="text-sm text-gray-500">{t("To")}</p>
           <p className="text-xl font-bold">{flight.destination}</p>
           <p className="text-gray-600">
             {dayjs(flight.departureDate)

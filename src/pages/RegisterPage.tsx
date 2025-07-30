@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ import type {
 import { useAuth } from "../context/AuthContext";
 
 const RegisterPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { login } = useAuth();
   const mutation = useRegister();
@@ -50,7 +52,7 @@ const RegisterPage: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">
-          Create your account
+          {t("Create your account")}
         </h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {/* Form fields */}
@@ -59,7 +61,7 @@ const RegisterPage: React.FC = () => {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email address
+              {t("Email address")}
             </label>
             <input
               id="email"
@@ -79,7 +81,7 @@ const RegisterPage: React.FC = () => {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              {t("Password")}
             </label>
             <input
               id="password"
@@ -111,7 +113,7 @@ const RegisterPage: React.FC = () => {
                 htmlFor="firstName"
                 className="block text-sm font-medium text-gray-700"
               >
-                First name
+                {t("First name")}
               </label>
               <input
                 id="firstName"
@@ -132,7 +134,7 @@ const RegisterPage: React.FC = () => {
                 htmlFor="lastName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Last name
+                {t("Last name")}
               </label>
               <input
                 id="lastName"
@@ -153,7 +155,7 @@ const RegisterPage: React.FC = () => {
               htmlFor="country"
               className="block text-sm font-medium text-gray-700"
             >
-              Country/Region
+              {t("Country/Region")}
             </label>
             <input
               id="country"
@@ -173,7 +175,7 @@ const RegisterPage: React.FC = () => {
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700"
             >
-              Phone number (optional)
+              {t("Phone number (optional)")}
             </label>
             <input
               id="phone"
@@ -189,7 +191,7 @@ const RegisterPage: React.FC = () => {
               disabled={mutation.isPending}
               className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300"
             >
-              {mutation.isPending ? "Registering..." : "Register"}
+              {mutation.isPending ? t("Registering...") : t("Register")}
             </button>
           </div>
         </form>
