@@ -35,6 +35,29 @@ AXIOS_INSTANCE.interceptors.request.use(
   }
 );
 
+// 添加响应拦截器，用于全局处理错误，特别是 401 Unauthorized
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => {
+    // 如果响应成功，直接返回
+    return response;
+  },
+  (error) => {
+    // 检查是否是 401 错误
+    if (error.response && error.response.status === 401) {
+      // 清除本地存储的认证信息
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userInfo");
+      // 为了确保应用状态完全重置，并强制重新加载认证逻辑，
+      // 我们将用户重定向到登录页并刷新页面。
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
+    // 对于其他错误，正常拒绝 Promise
+    return Promise.reject(error);
+  }
+);
+
 // 定义通用的 API 响应结构
 // T 是实际的业务数据类型
 export interface ApiResponse<T> {

@@ -34,18 +34,6 @@ const Navbar: React.FC = () => {
               >
                 Manage
               </Link>
-              <a
-                href="#"
-                className="text-gray-500 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Offers
-              </a>
-              <a
-                href="#"
-                className="text-gray-500 hover:bg-gray-100 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Help
-              </a>
             </div>
           </div>
           <div className="ml-4 flex items-center">

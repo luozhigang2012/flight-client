@@ -6,7 +6,6 @@ import RegisterPage from "../pages/RegisterPage";
 import SearchResultPage from "../pages/SearchResultPage";
 import MyBookingsPage from "../pages/MyBookingsPage";
 import BookingReviewPage from "../pages/BookingReviewPage";
-import FlightDetailPage from "../pages/FlightDetailPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 /**
@@ -60,10 +59,6 @@ export const router = createBrowserRouter([
       {
         path: "flights/search",
         element: <SearchResultPage />,
-      },
-      {
-        path: "flights/:id",
-        element: <FlightDetailPage />,
       },
       {
         path: "bookings",

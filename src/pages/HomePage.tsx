@@ -17,7 +17,7 @@ interface FlightSearchForm {
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { clearBooking } = useBooking();
+  const { clearBooking, setPassengers } = useBooking();
   const { data: airportsResponse, isLoading: isLoadingAirports } =
     useGetAirports();
 
@@ -53,6 +53,8 @@ const HomePage: React.FC = () => {
   const onSubmit: SubmitHandler<FlightSearchForm> = (data) => {
     // 在开始新的搜索之前，清除任何旧的预订信息
     clearBooking();
+    // 设置乘客数量
+    setPassengers(data.passengers);
 
     // 找到机场对象以获取城市名称
     const fromAirport = airports.find((a) => a.code === data.from);

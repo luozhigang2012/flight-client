@@ -1,12 +1,19 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import type { UserInfoDTO } from "../api/openAPIDefinition.schemas";
+import { check } from "../api/auth-controller/auth-controller";
 
 // 定义 AuthContext 的数据结构
 interface AuthContextType {
   isAuthenticated: boolean;
   user: UserInfoDTO | null;
   token: string | null;
-  isLoading: boolean; // 新增：指示认证状态是否正在加载
+  isLoading: boolean;
   login: (token: string, user: UserInfoDTO) => void;
   logout: () => void;
 }
@@ -20,24 +27,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<UserInfoDTO | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // 初始为 true
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // 在组件加载时，尝试从 localStorage恢复认证状态
-  useEffect(() => {
-    const storedToken = localStorage.getItem("accessToken");
-    const storedUser = localStorage.getItem("userInfo");
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        // 如果解析失败，清除无效数据
-        localStorage.removeItem("userInfo");
-        localStorage.removeItem("accessToken");
-      }
-    }
-    setIsLoading(false); // 无论是否恢复成功，都将加载状态设置为 false
+  const logout = useCallback(() => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userInfo");
   }, []);
+
+  // 在组件加载时，验证本地 token 的有效性
+  useEffect(() => {
+    const validateToken = async () => {
+      const storedToken = localStorage.getItem("accessToken");
+      const storedUser = localStorage.getItem("userInfo");
+
+      if (storedToken && storedUser) {
+        try {
+          // 先设置 token，以便 check API 可以携带认证头
+          setToken(storedToken);
+          const response = await check();
+          if (response.success && response.data) {
+            // Token 有效，恢复用户信息
+            setUser(JSON.parse(storedUser));
+          } else {
+            // Token 无效，清除所有信息
+            logout();
+          }
+        } catch (error) {
+          console.error("Token validation failed:", error);
+          logout();
+        }
+      }
+      setIsLoading(false);
+    };
+
+    validateToken();
+  }, [logout]);
 
   const login = (newToken: string, newUser: UserInfoDTO) => {
     setToken(newToken);
@@ -46,14 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem("userInfo", JSON.stringify(newUser));
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userInfo");
-  };
-
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!user && !!token;
 
   return (
     <AuthContext.Provider
