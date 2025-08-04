@@ -2,8 +2,30 @@
 import Axios, { type AxiosRequestConfig } from "axios";
 import i18n from "../i18n";
 
-// 从环境变量或配置文件中获取 API 的 base URL
-const API_URL = import.meta.env.VITE_API_BASE_URL;
+// 定义运行时配置的类型
+interface RuntimeConfig {
+  VITE_API_BASE_URL: string;
+}
+
+// 声明全局变量
+declare global {
+  interface Window {
+    runtimeConfig: RuntimeConfig;
+  }
+}
+
+// 根据环境（开发/生产）决定 API_URL
+let API_URL;
+
+if (import.meta.env.DEV) {
+  // 在开发环境中，总是使用 .env 文件中的 Vite 环境变量
+  API_URL = import.meta.env.VITE_API_BASE_URL;
+} else {
+  // 在生产环境中，使用由 entrypoint.sh 注入的运行时配置
+  API_URL = window.runtimeConfig?.VITE_API_BASE_URL;
+}
+
+console.log("API_URL=", API_URL);
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: API_URL });
 

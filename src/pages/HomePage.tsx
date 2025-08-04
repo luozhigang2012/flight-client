@@ -87,15 +87,11 @@ const HomePage: React.FC = () => {
   return (
     <div className="relative">
       {/* Background Image Section */}
-      <div
-        className="h-96 bg-cover bg-center flex flex-col justify-center items-center text-white"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1570715729793-993169fa7a49?q=80&w=2070&auto=format&fit=crop')",
-        }}
-      >
+      <div className="h-96 bg-cover bg-center flex flex-col justify-center items-center text-white bg-[url('https://images.unsplash.com/photo-1569154941061-e231b4725ef1?q=80&w=2070&auto=format&fit=crop')]">
         <h1 className="text-5xl font-bold">{t("Book flights")}</h1>
-        <p className="text-xl mt-2">{t("Find the best fares for your next trip")}</p>
+        <p className="text-xl mt-2">
+          {t("Find the best fares for your next trip")}
+        </p>
       </div>
 
       {/* Search Form Section */}

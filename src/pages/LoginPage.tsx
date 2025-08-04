@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useLogin } from "../api/auth-controller/auth-controller";
@@ -121,12 +121,12 @@ const LoginPage: React.FC = () => {
             <span className="text-gray-600">
               {t("Don't have an account?")}{" "}
             </span>
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               {t("Sign up")}
-            </a>
+            </Link>
           </div>
         </form>
       </div>

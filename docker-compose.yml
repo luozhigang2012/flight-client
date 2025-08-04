@@ -1,0 +1,38 @@
+services:
+  # 后端服务
+  flight-api:
+    # 指向后端项目的构建上下文
+    build: ../flight-api
+    image: flight-api:latest
+    container_name: flight-api-container
+    # 注意：在容器网络内部通信时，不需要将后端端口映射到主机
+    ports:
+      - "8080:8080"
+    env_file:
+      # 指向后端项目的 .env 文件
+      - ../flight-api/.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - flight-net
+
+  # 前端服务
+  flight-client:
+    # 依赖于我们已经构建好的本地镜像
+    build: .
+    image: flight-client:latest
+    container_name: flight-client-test
+    ports:
+      - "80:80"
+    environment:
+      # 关键：通过容器名连接到后端服务
+      - VITE_API_BASE_URL=http://localhost:8080
+    networks:
+      - flight-net
+    depends_on:
+      - flight-api
+
+networks:
+  flight-net:
+    # 声明我们使用的是一个已经存在的外部网络
+    external: true

@@ -19,14 +19,25 @@ const queryClient = new QueryClient({
   },
 });
 
-// Render the main app
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
-      {/* Stagewise Toolbar for debugging */}
-      <StagewiseToolbar />
-    </QueryClientProvider>
-  </StrictMode>
-);
+// 关键：在生产环境中检查运行时配置
+if (
+  !import.meta.env.DEV &&
+  (!window.runtimeConfig?.VITE_API_BASE_URL ||
+    window.runtimeConfig.VITE_API_BASE_URL === "__API_BASE_URL__")
+) {
+  // 如果配置不正确，重定向到专门的错误页面
+  // 使用 replace 避免用户可以通过“后退”按钮回到损坏的页面
+  window.location.replace("/config-error");
+} else {
+  // Render the main app
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+        {/* Stagewise Toolbar for debugging */}
+        <StagewiseToolbar />
+      </QueryClientProvider>
+    </StrictMode>
+  );
+}

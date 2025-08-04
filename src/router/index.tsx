@@ -7,6 +7,7 @@ import SearchResultPage from "../pages/SearchResultPage";
 import MyBookingsPage from "../pages/MyBookingsPage";
 import BookingReviewPage from "../pages/BookingReviewPage";
 import ProtectedRoute from "./ProtectedRoute";
+import ConfigErrorPage from "../pages/ConfigErrorPage";
 
 /**
  * 全局错误边界页面
@@ -77,5 +78,9 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: "/config-error",
+    element: <ConfigErrorPage />,
   },
 ]);
